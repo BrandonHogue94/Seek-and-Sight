@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://brw071refkrlg"]
+
+[ext_resource type="Texture2D" uid="uid://3gfvfoy1c7ag" path="res://Assets/EllieBackground.png" id="1_2v1kb"]
+[ext_resource type="Texture2D" uid="uid://iam8yc43mlx5" path="res://Assets/EllieNeutral.png" id="2_kkho4"]
+[ext_resource type="Texture2D" uid="uid://bbpd1jjy3tv5c" path="res://Assets/EllieBubble4.png" id="3_fnfbx"]
+[ext_resource type="FontFile" uid="uid://cj477dq342a0c" path="res://Assets/Chewy-Regular.ttf" id="4_pwx8f"]
+
+[node name="Main Menu" type="Node2D"]
+
+[node name="Images" type="Node2D" parent="."]
+
+[node name="EllieBackground" type="Sprite2D" parent="Images"]
+position = Vector2(583, 333)
+scale = Vector2(0.759115, 0.654297)
+texture = ExtResource("1_2v1kb")
+
+[node name="EllieNeutral" type="Sprite2D" parent="Images"]
+position = Vector2(146.25, 442)
+scale = Vector2(0.312012, 0.335938)
+texture = ExtResource("2_kkho4")
+
+[node name="Title" type="Sprite2D" parent="Images"]
+position = Vector2(638.5, 141.5)
+scale = Vector2(2.60698, 1.37377)
+texture = ExtResource("3_fnfbx")
+
+[node name="TitleLabel" type="Label" parent="Images/Title"]
+offset_left = -93.0196
+offset_top = -60.7816
+offset_right = 127.98
+offset_bottom = 86.2184
+theme_override_colors/font_color = Color(0.411765, 0.2, 0, 1)
+theme_override_fonts/font = ExtResource("4_pwx8f")
+theme_override_font_sizes/font_size = 56
+text = "Engineer's
+Workshop"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Activities" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 236.0
+offset_top = -132.0
+offset_right = 317.0
+offset_bottom = -19.0
