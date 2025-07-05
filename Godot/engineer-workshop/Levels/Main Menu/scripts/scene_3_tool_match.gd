@@ -245,4 +245,3 @@ func _on_next_button_pressed():
 	if has_node("/root/SceneManager"):
 		get_node("/root/SceneManager").complete_scene(3, 100)
 		get_node("/root/SceneManager").go_to_scene4()
-

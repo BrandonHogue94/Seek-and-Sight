@@ -1,0 +1,111 @@
+[gd_scene load_steps=7 format=3 uid="uid://c1fa4ngrj3ds"]
+
+[ext_resource type="Texture2D" uid="uid://3gfvfoy1c7ag" path="res://Assets/EllieBackground.png" id="1_lfbol"]
+[ext_resource type="Texture2D" uid="uid://ds8gg4or0e0up" path="res://Assets/EllieGesture.png" id="2_ledua"]
+[ext_resource type="FontFile" uid="uid://cj477dq342a0c" path="res://Assets/Chewy-Regular.ttf" id="3_8cuki"]
+[ext_resource type="Texture2D" uid="uid://cv4oacdxpnsri" path="res://Assets/EllieBubble2.png" id="4_ex103"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0624e"]
+bg_color = Color(0.8, 0.4, 0.2, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6fpn0"]
+bg_color = Color(0.2, 0.8, 0.3, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Background" type="Node2D" parent="."]
+
+[node name="EllieBackground" type="Sprite2D" parent="Background"]
+position = Vector2(581, 326)
+scale = Vector2(0.757813, 0.630859)
+texture = ExtResource("1_lfbol")
+
+[node name="EllieGesture" type="Sprite2D" parent="Background"]
+position = Vector2(60, 496)
+scale = Vector2(0.265381, 0.272461)
+texture = ExtResource("2_ledua")
+flip_h = true
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GameTitle" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 322.0
+offset_top = 11.0
+offset_right = 872.0
+offset_bottom = 151.0
+theme_override_colors/font_color = Color(0.243137, 0.145098, 0.062745, 1)
+theme_override_fonts/font = ExtResource("3_8cuki")
+theme_override_font_sizes/font_size = 80
+text = "Tower Building"
+uppercase = true
+
+[node name="InstructionBubble" type="Sprite2D" parent="UI"]
+position = Vector2(273.25, 231.75)
+scale = Vector2(0.936559, 0.836)
+texture = ExtResource("4_ex103")
+
+[node name="InstructionText" type="Label" parent="UI/InstructionBubble"]
+offset_left = -163.0
+offset_top = -43.0
+offset_right = 107.0
+offset_bottom = 65.0
+theme_override_colors/font_color = Color(0.243137, 0.145098, 0.062745, 1)
+theme_override_fonts/font = ExtResource("3_8cuki")
+theme_override_font_sizes/font_size = 24
+text = "Drag the words to 
+the correct sounds"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NavButtons" type="HBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 285.0
+offset_top = 514.0
+offset_right = 785.0
+offset_bottom = 594.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="BackButton" type="Button" parent="UI/NavButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_8cuki")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0624e")
+text = "← Back"
+
+[node name="Spacer" type="Control" parent="UI/NavButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NextButton" type="Button" parent="UI/NavButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_8cuki")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_6fpn0")
+text = "Next →"
+
+[node name="AudioClues" type="Node2D" parent="."]
+
+[node name="WordBlocks" type="Node2D" parent="."]
