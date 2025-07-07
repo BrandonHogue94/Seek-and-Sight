@@ -12,7 +12,7 @@ var is_dragging = false
 var dragged_block = null
 var original_positions = {}
 
-# First grade sight words - only including words that have audio files available
+# First grade sight words - matching your audio files
 var sight_words = [
 	"a", "about", "after", "all", "an", "and", "are", "as", "at", "back", "be", "because",
 	"the", "to", "said", "you", "it", "I", "have", "go", "not", "do", "can", "had", 
@@ -20,13 +20,14 @@ var sight_words = [
 	"when", "see", "him", "two"
 ]
 
-# Audio file paths - you'll need to add these audio files to your project
+# Audio file paths
 var word_audio_files = {}
+var feedback_audio_files = {}
 
 func _ready():
 	initialize_game()
 	setup_audio_system()
-	# setup_accessibility_features()  # TODO: Enable when ready
+	load_all_audio_files()
 	next_word()
 
 func initialize_game():
@@ -51,9 +52,10 @@ func generate_round_words():
 	shuffled_words.shuffle()
 	words_in_round = shuffled_words.slice(0, total_words)
 	
-	var screen_size = get_viewport().get_visible_rect().size
-	var start_y = screen_size.y * 0.2
-	var spacing = (screen_size.y * 0.6) / total_words
+	print("Selected words for this round: ", words_in_round)
+	
+	# Don't override the positions - use the positions set in the .tscn file
+	# The word blocks are already positioned in your scene file at specific locations
 	
 	for i in range(word_blocks.size()):
 		if i < words_in_round.size():
@@ -63,10 +65,18 @@ func generate_round_words():
 			var label = block.get_node("WordBlockLabel" + str(i + 1))
 			if label:
 				label.text = word
+				print("✅ Set word '" + word + "' on block " + str(i + 1))
+			else:
+				print("❌ Could not find label for block " + str(i + 1))
 			
 			block.set_meta("word", word)
-			block.position = Vector2(0, start_y + i * spacing)
+			# DON'T change position - keep the .tscn positions
+			# block.position = Vector2(0, start_y + i * spacing)  # REMOVED THIS LINE
+			block.visible = true  # Make sure block is visible
 			setup_word_block_interaction(block)
+		else:
+			# Hide unused blocks
+			word_blocks[i].visible = false
 
 func setup_word_block_interaction(block):
 	block.input_pickable = true
@@ -85,26 +95,110 @@ func setup_word_block_interaction(block):
 	block.mouse_exited.connect(unhover_callable)
 
 func setup_audio_system():
+	# Connect play button
 	$UI/AudioPanel/PlayButton.pressed.connect(_on_play_button_pressed)
+	
+	# Connect navigation buttons
+	$UI/NavButtons/BackButton.pressed.connect(_on_back_button_pressed)
+	$UI/NavButtons/NextButton.pressed.connect(_on_next_button_pressed)
+
+func load_all_audio_files():
+	print("=== LOADING AUDIO FILES ===")
 	load_word_audio_files()
+	load_feedback_audio_files()
+	print("=== AUDIO LOADING COMPLETE ===")
 
 func load_word_audio_files():
+	# Based on your ACTUAL folder structure
 	for word in sight_words:
+		var audio_loaded = false
+		
+		# Try different paths based on your structure
 		var audio_paths = [
-			"res://Assets/Audio/Grade Level/" + word.to_upper() + ".wav",
-			"res://Assets/Audio/Grade Level/" + word + ".wav",
-			"res://Assets/Audio/Grade Level/" + word.capitalize() + ".wav"
+			# First Grade Words folder (highest priority)
+			"res://Assets/Audio Lines/First Grade Words/" + word.to_upper() + ".wav",
+			"res://Assets/Audio Lines/First Grade Words/" + word.capitalize() + ".wav",
+			"res://Assets/Audio Lines/First Grade Words/" + word + ".wav",
+			
+			# Engineer Workshop (Temp) folder
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + word.to_upper() + ".wav",
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + word.capitalize() + ".wav",
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + word + ".wav",
+			
+			# Feedback folder
+			"res://Assets/Audio Lines/Feedback/" + word.to_upper() + ".wav",
+			"res://Assets/Audio Lines/Feedback/" + word.capitalize() + ".wav",
+			"res://Assets/Audio Lines/Feedback/" + word + ".wav",
+			
+			# Direct Engineers Workshop folder
+			"res://Assets/Engineers Workshop/" + word.to_upper() + ".wav",
+			"res://Assets/Engineers Workshop/" + word.capitalize() + ".wav",
+			"res://Assets/Engineers Workshop/" + word + ".wav",
+			
+			# Root Assets folder
+			"res://Assets/" + word.to_upper() + ".wav",
+			"res://Assets/" + word.capitalize() + ".wav",
+			"res://Assets/" + word + ".wav"
 		]
 		
-		var audio_loaded = false
 		for audio_path in audio_paths:
 			if ResourceLoader.exists(audio_path):
-				word_audio_files[word] = load(audio_path)
-				audio_loaded = true
-				break
+				var audio_stream = load(audio_path)
+				if audio_stream:
+					word_audio_files[word] = audio_stream
+					print("✅ Loaded audio for '" + word + "' from: " + audio_path)
+					audio_loaded = true
+					break
 		
 		if not audio_loaded:
+			print("❌ Audio file not found for: " + word)
 			word_audio_files[word] = null
+
+func load_feedback_audio_files():
+	# Load feedback sounds from your actual folder structure
+	var feedback_sounds = {
+		"correct": [
+			"res://Assets/Audio Lines/Feedback/AWESOME.wav",
+			"res://Assets/Audio Lines/Feedback/GREAT JOB.wav",
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/AWESOME.wav",
+			"res://Assets/Engineers Workshop/AWESOME.wav",
+			"res://Assets/AWESOME.wav"
+		],
+		"wrong": [
+			"res://Assets/Audio Lines/Feedback/ONE MORE TIME.wav",
+			"res://Assets/Audio Lines/Feedback/NOT QUIET.wav",
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/ONE MORE TIME.wav",
+			"res://Assets/Engineers Workshop/ONE MORE TIME.wav",
+			"res://Assets/ONE MORE TIME.wav"
+		],
+		"encouragement": [
+			"res://Assets/Audio Lines/Feedback/WAY TO GO.wav",
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/WAY TO GO.wav",
+			"res://Assets/Engineers Workshop/WAY TO GO.wav",
+			"res://Assets/WAY TO GO.wav"
+		],
+		"welcome": [
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LET'S BUILD A TOWER TOGETHER!.wav",
+			"res://Assets/Engineers Workshop/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LET'S BUILD A TOWER TOGETHER!.wav"
+		],
+		"instruction": [
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/LISTEN TO THE WORD AND DRAG IT TO BUILD YOUR TOWER!.wav",
+			"res://Assets/Engineers Workshop/LISTEN TO THE WORD AND DRAG IT TO BUILD YOUR TOWER!.wav"
+		],
+		"tools": [
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/DRAG THE WORDS TO MATCH THE TOOLS.wav",
+			"res://Assets/Engineers Workshop/DRAG THE WORDS TO MATCH THE TOOLS.wav"
+		]
+	}
+	
+	for category in feedback_sounds:
+		feedback_audio_files[category] = []
+		for audio_path in feedback_sounds[category]:
+			if ResourceLoader.exists(audio_path):
+				var audio_stream = load(audio_path)
+				if audio_stream:
+					feedback_audio_files[category].append(audio_stream)
+					print("✅ Loaded feedback audio: " + audio_path)
 
 func next_word():
 	if used_words.size() >= words_in_round.size():
@@ -119,15 +213,39 @@ func next_word():
 	play_word_audio(current_word)
 
 func play_word_audio(word):
+	print("Attempting to play audio for word: ", word)
+	
+	# Stop any currently playing audio
+	$Audio/WordAudio.stop()
+	
 	if word in word_audio_files and word_audio_files[word] != null:
 		$Audio/WordAudio.stream = word_audio_files[word]
 		$Audio/WordAudio.play()
+		print("✅ Playing audio file for: " + word)
+		show_word_visually(word)
 	else:
-		use_text_to_speech(word)
+		print("❌ No audio file found for: " + word)
+		show_word_visually(word)
 
-func use_text_to_speech(word):
-	# TODO: Implement TTS or custom audio fallback
-	pass
+func show_word_visually(word):
+	# Show the word with visual emphasis
+	var current_label = $UI/AudioPanel/CurrentWordLabel
+	current_label.text = "🔊 " + word.to_upper()
+	
+	# Flash the word
+	var original_color = current_label.modulate
+	current_label.modulate = Color.YELLOW
+	
+	var tween = create_tween()
+	tween.tween_property(current_label, "modulate", original_color, 1.0)
+
+func play_feedback_audio(category):
+	if category in feedback_audio_files and feedback_audio_files[category].size() > 0:
+		var audio_streams = feedback_audio_files[category]
+		var random_audio = audio_streams[randi() % audio_streams.size()]
+		$Audio/CorrectSound.stream = random_audio
+		$Audio/CorrectSound.play()
+		print("Playing feedback audio: ", category)
 
 func _on_play_button_pressed():
 	play_word_audio(current_word)
@@ -194,13 +312,18 @@ func correct_match(block, word):
 	$UI/AudioPanel/ScoreLabel.text = "Score: " + str(score)
 	used_words.append(word)
 	hide_word_block(block)
-	$Audio/CorrectSound.play()
+	
+	# Play correct feedback audio
+	play_feedback_audio("correct")
+	
 	show_feedback("Perfect! Great building!", false)
 	await get_tree().create_timer(1.5).timeout
 	next_word()
 
 func wrong_match(block):
-	$Audio/WrongSound.play()
+	# Play wrong feedback audio
+	play_feedback_audio("wrong")
+	
 	show_feedback("Try again! Listen carefully!", true)
 	return_to_start(block)
 	await get_tree().create_timer(1.0).timeout
@@ -210,35 +333,61 @@ func add_block_to_tower(word):
 	var tower_block = create_tower_block(word)
 	var tower_container = $TowerArea/TowerBlocks
 	
-	var y_offset = -50 * tower_blocks.size()
+	# Calculate position to stack blocks properly on top of each other
+	var final_block_scale = 0.5
+	var estimated_block_height = 60
+	var gap_between_blocks = 5
+	
+	# Stack upward (negative Y) with proper spacing based on actual block height
+	var y_offset = -(estimated_block_height + gap_between_blocks) * tower_blocks.size()
 	tower_block.position = Vector2(0, y_offset)
+	
+	print("Block ", tower_blocks.size() + 1, " positioned at: ", tower_block.position)
 	
 	tower_container.add_child(tower_block)
 	tower_blocks.append(tower_block)
 	
 	tower_block.scale = Vector2(0, 0)
 	var tween = create_tween()
-	tween.tween_property(tower_block, "scale", Vector2(1, 1), 0.5)
+	tween.tween_property(tower_block, "scale", Vector2(0.5, 0.5), 0.5)
 
 func create_tower_block(word):
 	var block_sprite = Sprite2D.new()
-	block_sprite.texture = preload("res://Assets/EllieBlocks1.png")
 	
-	var scale_factor = 1.0 + (len(word) * 0.05)
-	block_sprite.scale = Vector2(scale_factor, 0.6)
+	# Try multiple paths for the block texture based on your structure
+	var texture_paths = [
+		"res://Assets/EllieBlocks1.png",  # Root Assets (as shown in your .tscn)
+		"res://Assets/Engineers Workshop/EllieBlocks1.png",
+		"res://Assets/Engineers Workshop/EllieBlocks.png"
+	]
+	
+	for texture_path in texture_paths:
+		if ResourceLoader.exists(texture_path):
+			block_sprite.texture = load(texture_path)
+			print("✅ Loaded block texture from: " + texture_path)
+			break
 	
 	var label = Label.new()
 	label.text = word
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.position = Vector2(-80, -20)
-	label.size = Vector2(160, 40)
+	label.position = Vector2(-60, -15)
+	label.size = Vector2(120, 30)
 	label.add_theme_color_override("font_color", Color(0.243137, 0.145098, 0.062745, 1))
 	
-	var font_path = "res://Assets/Chewy-Regular.ttf"
-	if ResourceLoader.exists(font_path):
-		label.add_theme_font_override("font", load(font_path))
-	label.add_theme_font_size_override("font_size", 24)
+	# Try multiple font paths based on your structure
+	var font_paths = [
+		"res://Assets/Chewy-Regular.ttf",  # Root Assets (as shown in your .tscn)
+		"res://Assets/Fonts/Chewy-Regular.ttf"
+	]
+	
+	for font_path in font_paths:
+		if ResourceLoader.exists(font_path):
+			label.add_theme_font_override("font", load(font_path))
+			print("✅ Loaded font from: " + font_path)
+			break
+	
+	label.add_theme_font_size_override("font_size", 40)
 	
 	block_sprite.add_child(label)
 	
@@ -256,7 +405,6 @@ func return_to_start(block):
 
 func show_feedback(message, is_error):
 	update_instruction_text(message)
-	# TODO: Add additional visual feedback like particles or screen shake if desired
 
 func update_instruction_text(text):
 	$UI/InstructionBubble/InstructionText.text = text
@@ -267,7 +415,11 @@ func is_word_used(block):
 
 func complete_game():
 	show_feedback("AMAZING WORK! Tower Complete!", false)
-	update_instruction_text("Outstanding! You built an amazing tower!\nReady for the next challenge?")
+	update_instruction_text("Outstanding! You built an amazing tower! Ready for the next challenge?")
+	
+	# Play celebration audio
+	play_feedback_audio("encouragement")
+	
 	$UI/NavButtons/NextButton.disabled = false
 	$UI/NavButtons/NextButton.text = "Amazing! Next →"
 
@@ -321,3 +473,15 @@ func reset_game():
 	
 	generate_round_words()
 	next_word()
+
+# Debug function to test audio files
+func test_all_audio():
+	print("=== TESTING ALL AUDIO FILES ===")
+	for word in word_audio_files:
+		if word_audio_files[word] != null:
+			print("✅ Audio available for: ", word)
+		else:
+			print("❌ No audio for: ", word)
+	
+	for category in feedback_audio_files:
+		print("Feedback category '", category, "' has ", feedback_audio_files[category].size(), " files")
