@@ -1,4 +1,4 @@
-# Scene3_ToolMatch.gd - Cleaned and Simplified Version
+# Scene3_ToolMatch.gd - Updated with Correct Asset Paths
 # Attach this script to the Scene3_ToolMatch root node
 
 extends Node2D
@@ -10,9 +10,15 @@ var matches_made = 0
 var total_matches = 4
 var matched_pairs = {}
 
+# Audio system variables
+var word_audio_files = {}
+var feedback_audio_files = {}
+
 func _ready():
 	store_original_positions()
 	setup_tools()
+	load_all_audio_files()
+	play_welcome_audio()
 
 func store_original_positions():
 	var tools = [
@@ -40,12 +46,134 @@ func setup_tools():
 			tool.mouse_entered.connect(_on_tool_hover.bind(tool))
 			tool.mouse_exited.connect(_on_tool_unhover.bind(tool))
 
+func load_all_audio_files():
+	print("=== LOADING TOOL MATCH AUDIO FILES ===")
+	load_tool_audio_files()
+	load_feedback_audio_files()
+	print("=== AUDIO LOADING COMPLETE ===")
+
+func load_tool_audio_files():
+	# Tool names based on your audio files
+	var tool_names = ["hammer", "wrench", "screwdriver", "saw"]
+	
+	for tool_name in tool_names:
+		var audio_loaded = false
+		
+		# Try different paths based on your folder structure
+		var audio_paths = [
+			# Engineer Workshop (Temp) folder - where your tool audio files are
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + tool_name.to_upper() + ".wav",
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + tool_name.capitalize() + ".wav",
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + tool_name + ".wav",
+			
+			# First Grade Words folder
+			"res://Assets/Audio Lines/First Grade Words/" + tool_name.to_upper() + ".wav",
+			"res://Assets/Audio Lines/First Grade Words/" + tool_name.capitalize() + ".wav",
+			"res://Assets/Audio Lines/First Grade Words/" + tool_name + ".wav",
+			
+			# Feedback folder
+			"res://Assets/Audio Lines/Feedback/" + tool_name.to_upper() + ".wav",
+			"res://Assets/Audio Lines/Feedback/" + tool_name.capitalize() + ".wav",
+			"res://Assets/Audio Lines/Feedback/" + tool_name + ".wav",
+			
+			# Engineers Workshop folder
+			"res://Assets/Engineers Workshop/" + tool_name.to_upper() + ".wav",
+			"res://Assets/Engineers Workshop/" + tool_name.capitalize() + ".wav",
+			"res://Assets/Engineers Workshop/" + tool_name + ".wav"
+		]
+		
+		for audio_path in audio_paths:
+			if ResourceLoader.exists(audio_path):
+				var audio_stream = load(audio_path)
+				if audio_stream:
+					word_audio_files[tool_name] = audio_stream
+					print("✅ Loaded tool audio for '" + tool_name + "' from: " + audio_path)
+					audio_loaded = true
+					break
+		
+		if not audio_loaded:
+			print("❌ Tool audio file not found for: " + tool_name)
+			word_audio_files[tool_name] = null
+
+func load_feedback_audio_files():
+	# Load feedback sounds from your folder structure
+	var feedback_sounds = {
+		"correct": [
+			"res://Assets/Audio Lines/Feedback/AWESOME.wav",
+			"res://Assets/Audio Lines/Feedback/GREAT JOB.wav",
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/AWESOME.wav",
+			"res://Assets/Engineers Workshop/AWESOME.wav"
+		],
+		"wrong": [
+			"res://Assets/Audio Lines/Feedback/ONE MORE TIME.wav",
+			"res://Assets/Audio Lines/Feedback/NOT QUIET.wav",
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/ONE MORE TIME.wav",
+			"res://Assets/Engineers Workshop/ONE MORE TIME.wav"
+		],
+		"encouragement": [
+			"res://Assets/Audio Lines/Feedback/WAY TO GO.wav",
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/WAY TO GO.wav",
+			"res://Assets/Engineers Workshop/WAY TO GO.wav"
+		],
+		"welcome": [
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LET'S BUILD A TOWER TOGETHER!.wav",
+			"res://Assets/Engineers Workshop/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LET'S BUILD A TOWER TOGETHER!.wav"
+		],
+		"tools_instruction": [
+			"res://Assets/Audio Lines/Engineer Workshop (Temp)/DRAG THE WORDS TO MATCH THE TOOLS.wav",
+			"res://Assets/Engineers Workshop/DRAG THE WORDS TO MATCH THE TOOLS.wav"
+		]
+	}
+	
+	for category in feedback_sounds:
+		feedback_audio_files[category] = []
+		for audio_path in feedback_sounds[category]:
+			if ResourceLoader.exists(audio_path):
+				var audio_stream = load(audio_path)
+				if audio_stream:
+					feedback_audio_files[category].append(audio_stream)
+					print("✅ Loaded feedback audio: " + audio_path)
+
+func play_welcome_audio():
+	# Play welcome message when game starts
+	if "welcome" in feedback_audio_files and feedback_audio_files["welcome"].size() > 0:
+		if has_node("Audio/WordAudio"):
+			$Audio/WordAudio.stream = feedback_audio_files["welcome"][0]
+			$Audio/WordAudio.play()
+
+func play_tool_audio(tool_name):
+	print("Attempting to play audio for tool: ", tool_name)
+	
+	if has_node("Audio/WordAudio"):
+		# Stop any currently playing audio
+		$Audio/WordAudio.stop()
+		
+		if tool_name in word_audio_files and word_audio_files[tool_name] != null:
+			$Audio/WordAudio.stream = word_audio_files[tool_name]
+			$Audio/WordAudio.play()
+			print("✅ Playing audio for tool: " + tool_name)
+		else:
+			print("❌ No audio file found for tool: " + tool_name)
+
+func play_feedback_audio(category):
+	if category in feedback_audio_files and feedback_audio_files[category].size() > 0:
+		var audio_streams = feedback_audio_files[category]
+		var random_audio = audio_streams[randi() % audio_streams.size()]
+		
+		if has_node("Audio/CorrectSound"):
+			$Audio/CorrectSound.stream = random_audio
+			$Audio/CorrectSound.play()
+			print("Playing feedback audio: ", category)
+
 func _on_tool_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			var mouse_pos = get_global_mouse_position()
 			var clicked_tool = find_tool_at_position(mouse_pos)
 			if clicked_tool:
+				# Play tool audio when clicked
+				var tool_name = get_tool_name(clicked_tool)
+				play_tool_audio(tool_name)
 				start_dragging(clicked_tool)
 		else:
 			stop_dragging()
@@ -125,9 +253,13 @@ func check_match(tool, word_block):
 		create_successful_match(tool, word_block)
 	else:
 		show_feedback("Try again! " + tool_name.capitalize() + " doesn't match " + word_name.capitalize())
+		play_feedback_audio("wrong")
 		return_to_start(tool)
 
 func create_successful_match(tool, word_block):
+	# Play success audio
+	play_feedback_audio("correct")
+	
 	# Hide the tool with a nice fade effect instead of repositioning
 	var tween = create_tween()
 	tween.parallel().tween_property(tool, "modulate:a", 0.0, 0.5)  # Fade out
@@ -159,6 +291,9 @@ func create_successful_match(tool, word_block):
 
 func complete_all_matches():
 	show_feedback("OUTSTANDING WORK!\nYou're an amazing engineer!\nReady for your next challenge?")
+	
+	# Play celebration audio
+	play_feedback_audio("encouragement")
 	
 	# Enable next button
 	if has_node("UI/NavButtons/NextButton"):
@@ -245,3 +380,15 @@ func _on_next_button_pressed():
 	if has_node("/root/SceneManager"):
 		get_node("/root/SceneManager").complete_scene(3, 100)
 		get_node("/root/SceneManager").go_to_scene4()
+
+# Debug function to test audio files
+func test_all_audio():
+	print("=== TESTING ALL TOOL AUDIO FILES ===")
+	for tool_name in word_audio_files:
+		if word_audio_files[tool_name] != null:
+			print("✅ Audio available for: ", tool_name)
+		else:
+			print("❌ No audio for: ", tool_name)
+	
+	for category in feedback_audio_files:
+		print("Feedback category '", category, "' has ", feedback_audio_files[category].size(), " files")
