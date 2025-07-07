@@ -113,12 +113,12 @@ func setup_audio_system():
 
 func load_feedback_audio_files():
 	var feedback_sounds = {
-		"awesome": "res://Assets/Audio Lines/Feedback/AWESOME.wav",
-		"great_job": "res://Assets/Audio Lines/Feedback/GREAT JOB.wav",
-		"one_more_time": "res://Assets/Audio Lines/Feedback/ONE MORE TIME.wav",
-		"not_quiet": "res://Assets/Audio Lines/Feedback/NOT QUIET.wav",
-		"way_to_go": "res://Assets/Audio Lines/Feedback/WAY TO GO.wav",
-		"instructions": "res://Assets/Audio Lines/Engineer Workshop (Temp)/DRAG THE WORDS TO MATCH THE TOOLS.wav"
+		"awesome": "res://Assets/Audio/Feedback/AWESOME.wav",
+		"great_job": "res://Assets/Audio/Feedback/GREAT JOB.wav",
+		"one_more_time": "res://Assets/Audio/Feedback/ONE MORE TIME.wav",
+		"not_quiet": "res://Assets/Audio/Feedback/NOT QUIET.wav",
+		"way_to_go": "res://Assets/Audio/Feedback/WAY TO GO.wav",
+		"instructions": "res://Assets/Audio/Engineer Workshop (Temp)/DRAG THE WORDS TO MATCH THE TOOLS.wav"
 	}
 	
 	for key in feedback_sounds:
@@ -131,12 +131,12 @@ func load_feedback_audio_files():
 func load_word_audio_files():
 	for word in sight_words:
 		var audio_paths = [
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + word.to_upper() + ".wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + word + ".wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + word.capitalize() + ".wav",
-			"res://Assets/Audio Lines/Grade Level/" + word.to_upper() + ".wav",
-			"res://Assets/Audio Lines/Grade Level/" + word + ".wav",
-			"res://Assets/Audio Lines/Grade Level/" + word.capitalize() + ".wav"
+			"res://Assets/Audio/Engineer Workshop (Temp)/" + word.to_upper() + ".wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/" + word + ".wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/" + word.capitalize() + ".wav",
+			"res://Assets/Audio/Grade Level/" + word.to_upper() + ".wav",
+			"res://Assets/Audio/Grade Level/" + word + ".wav",
+			"res://Assets/Audio/Grade Level/" + word.capitalize() + ".wav"
 		]
 		
 		var audio_loaded = false
@@ -174,6 +174,7 @@ func highlight_current_slot():
 				panel.modulate = Color.WHITE
 
 func play_word_audio(word):
+	await get_tree().create_timer(3.0).timeout
 	if word in word_audio_files and word_audio_files[word] != null:
 		$Audio/WordAudio.stream = word_audio_files[word]
 		$Audio/WordAudio.play()
@@ -474,13 +475,10 @@ func _input(event):
 				stop_dragging()
 
 func _on_back_button_pressed():
-	if has_node("/root/SceneManager"):
-		get_node("/root/SceneManager").go_to_main_menu()
+	get_tree().change_scene_to_file("res://Levels/Main Menu/Scenes/Scene1_Welcome.tscn")
 
 func _on_next_button_pressed():
-	if has_node("/root/SceneManager"):
-		get_node("/root/SceneManager").complete_scene(3, score)  # Scene 4 is index 3
-		get_node("/root/SceneManager").go_to_scene5()
+	get_tree().quit()
 
 func reset_game():
 	score = 0

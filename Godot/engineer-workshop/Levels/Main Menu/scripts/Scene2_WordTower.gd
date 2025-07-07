@@ -116,19 +116,19 @@ func load_word_audio_files():
 		# Try different paths based on your structure
 		var audio_paths = [
 			# First Grade Words folder (highest priority)
-			"res://Assets/Audio Lines/First Grade Words/" + word.to_upper() + ".wav",
-			"res://Assets/Audio Lines/First Grade Words/" + word.capitalize() + ".wav",
-			"res://Assets/Audio Lines/First Grade Words/" + word + ".wav",
+			"res://Assets/Audio/Grade Level/" + word.to_upper() + ".wav",
+			"res://Assets/Audio/Grade Level/" + word.capitalize() + ".wav",
+			"res://Assets/Audio/Grade Level/" + word + ".wav",
 			
 			# Engineer Workshop (Temp) folder
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + word.to_upper() + ".wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + word.capitalize() + ".wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + word + ".wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/" + word.to_upper() + ".wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/" + word.capitalize() + ".wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/" + word + ".wav",
 			
 			# Feedback folder
-			"res://Assets/Audio Lines/Feedback/" + word.to_upper() + ".wav",
-			"res://Assets/Audio Lines/Feedback/" + word.capitalize() + ".wav",
-			"res://Assets/Audio Lines/Feedback/" + word + ".wav",
+			"res://Assets/Audio/Feedback/" + word.to_upper() + ".wav",
+			"res://Assets/Audio/Feedback/" + word.capitalize() + ".wav",
+			"res://Assets/Audio/Feedback/" + word + ".wav",
 			
 			# Direct Engineers Workshop folder
 			"res://Assets/Engineers Workshop/" + word.to_upper() + ".wav",
@@ -158,35 +158,35 @@ func load_feedback_audio_files():
 	# Load feedback sounds from your actual folder structure
 	var feedback_sounds = {
 		"correct": [
-			"res://Assets/Audio Lines/Feedback/AWESOME.wav",
-			"res://Assets/Audio Lines/Feedback/GREAT JOB.wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/AWESOME.wav",
+			"res://Assets/Audio/Feedback/AWESOME.wav",
+			"res://Assets/Audio/Feedback/GREAT JOB.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/AWESOME.wav",
 			"res://Assets/Engineers Workshop/AWESOME.wav",
 			"res://Assets/AWESOME.wav"
 		],
 		"wrong": [
-			"res://Assets/Audio Lines/Feedback/ONE MORE TIME.wav",
-			"res://Assets/Audio Lines/Feedback/NOT QUIET.wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/ONE MORE TIME.wav",
+			"res://Assets/Audio/Feedback/ONE MORE TIME.wav",
+			"res://Assets/Audio/Feedback/NOT QUIET.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/ONE MORE TIME.wav",
 			"res://Assets/Engineers Workshop/ONE MORE TIME.wav",
 			"res://Assets/ONE MORE TIME.wav"
 		],
 		"encouragement": [
-			"res://Assets/Audio Lines/Feedback/WAY TO GO.wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/WAY TO GO.wav",
+			"res://Assets/Audio/Feedback/WAY TO GO.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/WAY TO GO.wav",
 			"res://Assets/Engineers Workshop/WAY TO GO.wav",
 			"res://Assets/WAY TO GO.wav"
 		],
 		"welcome": [
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LET'S BUILD A TOWER TOGETHER!.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LET'S BUILD A TOWER TOGETHER!.wav",
 			"res://Assets/Engineers Workshop/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LET'S BUILD A TOWER TOGETHER!.wav"
 		],
 		"instruction": [
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/LISTEN TO THE WORD AND DRAG IT TO BUILD YOUR TOWER!.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/LISTEN TO THE WORD AND DRAG IT TO BUILD YOUR TOWER!.wav",
 			"res://Assets/Engineers Workshop/LISTEN TO THE WORD AND DRAG IT TO BUILD YOUR TOWER!.wav"
 		],
 		"tools": [
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/DRAG THE WORDS TO MATCH THE TOOLS.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/DRAG THE WORDS TO MATCH THE TOOLS.wav",
 			"res://Assets/Engineers Workshop/DRAG THE WORDS TO MATCH THE TOOLS.wav"
 		]
 	}
@@ -213,6 +213,7 @@ func next_word():
 	play_word_audio(current_word)
 
 func play_word_audio(word):
+	await get_tree().create_timer(3.0).timeout
 	print("Attempting to play audio for word: ", word)
 	
 	# Stop any currently playing audio
@@ -444,13 +445,10 @@ func _on_tower_drop_zone_exited(body):
 	$TowerArea/TowerDropZone.modulate = Color.WHITE
 
 func _on_back_button_pressed():
-	if has_node("/root/SceneManager"):
-		get_node("/root/SceneManager").go_to_main_menu()
+	get_tree().change_scene_to_file("res://Levels/Main Menu/Scenes/Scene1_Welcome.tscn")
 
 func _on_next_button_pressed():
-	if has_node("/root/SceneManager"):
-		get_node("/root/SceneManager").complete_scene(1, score)
-		get_node("/root/SceneManager").go_to_scene2()
+	get_tree().change_scene_to_file("res://Levels/Main Menu/Scenes/Scene3_ToolMatch.tscn")
 
 func reset_game():
 	score = 0
@@ -485,3 +483,4 @@ func test_all_audio():
 	
 	for category in feedback_audio_files:
 		print("Feedback category '", category, "' has ", feedback_audio_files[category].size(), " files")
+		

@@ -62,19 +62,19 @@ func load_tool_audio_files():
 		# Try different paths based on your folder structure
 		var audio_paths = [
 			# Engineer Workshop (Temp) folder - where your tool audio files are
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + tool_name.to_upper() + ".wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + tool_name.capitalize() + ".wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/" + tool_name + ".wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/" + tool_name.to_upper() + ".wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/" + tool_name.capitalize() + ".wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/" + tool_name + ".wav",
 			
 			# First Grade Words folder
-			"res://Assets/Audio Lines/First Grade Words/" + tool_name.to_upper() + ".wav",
-			"res://Assets/Audio Lines/First Grade Words/" + tool_name.capitalize() + ".wav",
-			"res://Assets/Audio Lines/First Grade Words/" + tool_name + ".wav",
+			"res://Assets/Audio/Grade Level/" + tool_name.to_upper() + ".wav",
+			"res://Assets/Audio/Grade Level/" + tool_name.capitalize() + ".wav",
+			"res://Assets/Audio/Grade Level/" + tool_name + ".wav",
 			
 			# Feedback folder
-			"res://Assets/Audio Lines/Feedback/" + tool_name.to_upper() + ".wav",
-			"res://Assets/Audio Lines/Feedback/" + tool_name.capitalize() + ".wav",
-			"res://Assets/Audio Lines/Feedback/" + tool_name + ".wav",
+			"res://Assets/Audio/Feedback/" + tool_name.to_upper() + ".wav",
+			"res://Assets/Audio/Feedback/" + tool_name.capitalize() + ".wav",
+			"res://Assets/Audio/Feedback/" + tool_name + ".wav",
 			
 			# Engineers Workshop folder
 			"res://Assets/Engineers Workshop/" + tool_name.to_upper() + ".wav",
@@ -99,28 +99,28 @@ func load_feedback_audio_files():
 	# Load feedback sounds from your folder structure
 	var feedback_sounds = {
 		"correct": [
-			"res://Assets/Audio Lines/Feedback/AWESOME.wav",
-			"res://Assets/Audio Lines/Feedback/GREAT JOB.wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/AWESOME.wav",
+			"res://Assets/Audio/Feedback/AWESOME.wav",
+			"res://Assets/Audio/Feedback/GREAT JOB.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/AWESOME.wav",
 			"res://Assets/Engineers Workshop/AWESOME.wav"
 		],
 		"wrong": [
-			"res://Assets/Audio Lines/Feedback/ONE MORE TIME.wav",
-			"res://Assets/Audio Lines/Feedback/NOT QUIET.wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/ONE MORE TIME.wav",
+			"res://Assets/Audio/Feedback/ONE MORE TIME.wav",
+			"res://Assets/Audio/Feedback/NOT QUIET.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/ONE MORE TIME.wav",
 			"res://Assets/Engineers Workshop/ONE MORE TIME.wav"
 		],
 		"encouragement": [
-			"res://Assets/Audio Lines/Feedback/WAY TO GO.wav",
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/WAY TO GO.wav",
+			"res://Assets/Audio/Feedback/WAY TO GO.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/WAY TO GO.wav",
 			"res://Assets/Engineers Workshop/WAY TO GO.wav"
 		],
 		"welcome": [
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LET'S BUILD A TOWER TOGETHER!.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LET'S BUILD A TOWER TOGETHER!.wav",
 			"res://Assets/Engineers Workshop/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LET'S BUILD A TOWER TOGETHER!.wav"
 		],
 		"tools_instruction": [
-			"res://Assets/Audio Lines/Engineer Workshop (Temp)/DRAG THE WORDS TO MATCH THE TOOLS.wav",
+			"res://Assets/Audio/Engineer Workshop (Temp)/DRAG THE WORDS TO MATCH THE TOOLS.wav",
 			"res://Assets/Engineers Workshop/DRAG THE WORDS TO MATCH THE TOOLS.wav"
 		]
 	}
@@ -373,13 +373,10 @@ func _process(delta):
 
 # Navigation button handlers
 func _on_back_button_pressed():
-	if has_node("/root/SceneManager"):
-		get_node("/root/SceneManager").go_to_scene2()
+	get_tree().change_scene_to_file("res://Levels/Main Menu/Scenes/Scene1_Welcome.tscn")
 
 func _on_next_button_pressed():
-	if has_node("/root/SceneManager"):
-		get_node("/root/SceneManager").complete_scene(3, 100)
-		get_node("/root/SceneManager").go_to_scene4()
+	get_tree().change_scene_to_file("res://Levels/Main Menu/Scenes/Scene4_FixBridge.tscn")
 
 # Debug function to test audio files
 func test_all_audio():

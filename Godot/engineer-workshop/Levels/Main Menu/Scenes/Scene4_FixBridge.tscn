@@ -1,11 +1,11 @@
 [gd_scene load_steps=12 format=3 uid="uid://cly0l8lus4e74"]
 
-[ext_resource type="Texture2D" uid="uid://doho3vovl0aqs" path="res://Assets/Engineers Workshop/bridge_background.png" id="1_bg"]
-[ext_resource type="Script" uid="uid://b5v735wk71oq1" path="res://Levels/Main Menu/scripts/Scene4_FixBridge.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dgt4ukhh4okxd" path="res://Assets/Engineers Workshop/EllieGesture.png" id="2_ellie"]
-[ext_resource type="FontFile" uid="uid://okak4mn3pac6" path="res://Assets/Fonts/Chewy-Regular.ttf" id="3_font"]
-[ext_resource type="Texture2D" uid="uid://cth101xucdlsv" path="res://Assets/Engineers Workshop/EllieBubble2.png" id="4_bubble"]
-[ext_resource type="Texture2D" uid="uid://rpij1us61sc6" path="res://Assets/Engineers Workshop/EllieBlocks1.png" id="5_blocks"]
+[ext_resource type="Texture2D" uid="uid://duuek3x316auq" path="res://Assets/bridge_background.png" id="1_bg"]
+[ext_resource type="Script" uid="uid://bxf5llc3xoghu" path="res://Levels/Main Menu/scripts/Scene4_FixBridge.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ds8gg4or0e0up" path="res://Assets/EllieGesture.png" id="2_ellie"]
+[ext_resource type="FontFile" uid="uid://cj477dq342a0c" path="res://Assets/Chewy-Regular.ttf" id="3_font"]
+[ext_resource type="Texture2D" uid="uid://cv4oacdxpnsri" path="res://Assets/EllieBubble2.png" id="4_bubble"]
+[ext_resource type="Texture2D" uid="uid://b3viiix225dtm" path="res://Assets/EllieBlocks1.png" id="5_blocks"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back"]
 bg_color = Color(0.8, 0.4, 0.2, 1)

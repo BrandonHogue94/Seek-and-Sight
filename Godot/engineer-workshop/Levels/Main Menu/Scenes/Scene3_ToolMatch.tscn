@@ -1,15 +1,16 @@
-[gd_scene load_steps=15 format=3 uid="uid://b3gwno6ounu42"]
+[gd_scene load_steps=16 format=3 uid="uid://b3gwno6ounu42"]
 
-[ext_resource type="Texture2D" uid="uid://52t13hert744" path="res://Assets/Engineers Workshop/EllieBackground.png" id="1_bci5i"]
-[ext_resource type="Script" uid="uid://b0ftjyrwqvdtt" path="res://Levels/Main Menu/scripts/scene_3_tool_match.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dgt4ukhh4okxd" path="res://Assets/Engineers Workshop/EllieGesture.png" id="2_w3cok"]
-[ext_resource type="FontFile" uid="uid://okak4mn3pac6" path="res://Assets/Fonts/Chewy-Regular.ttf" id="3_0lrx8"]
-[ext_resource type="Texture2D" uid="uid://cth101xucdlsv" path="res://Assets/Engineers Workshop/EllieBubble2.png" id="4_fxfus"]
-[ext_resource type="Texture2D" uid="uid://ctawgomhnbxcw" path="res://Assets/Engineers Workshop/construction tools cartoon set/hammer_7201078.png" id="6_c5ldm"]
-[ext_resource type="Texture2D" uid="uid://jjt3f120niwx" path="res://Assets/Engineers Workshop/construction tools cartoon set/wrench_2281758.png" id="7_hfeje"]
-[ext_resource type="Texture2D" uid="uid://cbex61cgqf74v" path="res://Assets/Engineers Workshop/EllieBubble5.png" id="8_8kcsj"]
-[ext_resource type="Texture2D" uid="uid://c6hm60vrivegy" path="res://Assets/Engineers Workshop/construction tools cartoon set/screwdriver_5607090.png" id="8_a6qls"]
-[ext_resource type="Texture2D" uid="uid://xv0qyfrk11ll" path="res://Assets/Engineers Workshop/construction tools cartoon set/saw_2766022.png" id="9_lcfmk"]
+[ext_resource type="Texture2D" uid="uid://3gfvfoy1c7ag" path="res://Assets/EllieBackground.png" id="1_bci5i"]
+[ext_resource type="Script" uid="uid://bqmpldde8cv7q" path="res://Levels/Main Menu/scripts/scene_3_tool_match.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ds8gg4or0e0up" path="res://Assets/EllieGesture.png" id="2_w3cok"]
+[ext_resource type="FontFile" uid="uid://cj477dq342a0c" path="res://Assets/Chewy-Regular.ttf" id="3_0lrx8"]
+[ext_resource type="Texture2D" uid="uid://cv4oacdxpnsri" path="res://Assets/EllieBubble2.png" id="4_fxfus"]
+[ext_resource type="Texture2D" uid="uid://bw3gkocahpuv7" path="res://Assets/Hammer.png" id="6_c5ldm"]
+[ext_resource type="AudioStream" uid="uid://eoyxv4nf5a2p" path="res://Assets/Audio/Engineer Workshop (Temp)/DRAG THE WORDS TO MATCH THE TOOLS.wav" id="6_hfeje"]
+[ext_resource type="Texture2D" uid="uid://cobwhonrh2cv8" path="res://Assets/Wrench.png" id="7_hfeje"]
+[ext_resource type="Texture2D" uid="uid://3nfxj6awsx32" path="res://Assets/EllieBubble5.png" id="8_8kcsj"]
+[ext_resource type="Texture2D" uid="uid://coah3kid50v6v" path="res://Assets/Screwdriver.png" id="8_a6qls"]
+[ext_resource type="Texture2D" uid="uid://bhbxfdg37n523" path="res://Assets/Saw.png" id="9_lcfmk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back"]
 bg_color = Color(0.8, 0.4, 0.2, 1)
@@ -130,6 +131,11 @@ theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_next")
 disabled = true
 text = "Next →"
+
+[node name="DragTheWordsToMatchTheTools" type="AudioStreamPlayer2D" parent="UI/NavButtons"]
+position = Vector2(228, -287)
+stream = ExtResource("6_hfeje")
+autoplay = true
 
 [node name="ToolArea" type="Node2D" parent="."]
 position = Vector2(300, 100)
@@ -360,3 +366,6 @@ volume_db = -8.0
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="Audio"]
 volume_db = -15.0
 autoplay = true
+
+[connection signal="pressed" from="UI/NavButtons/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="UI/NavButtons/NextButton" to="." method="_on_next_button_pressed"]

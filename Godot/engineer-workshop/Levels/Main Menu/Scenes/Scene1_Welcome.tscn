@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://3cb7jl2jr3hb"]
+[gd_scene load_steps=11 format=3 uid="uid://3cb7jl2jr3hb"]
 
 [ext_resource type="Texture2D" uid="uid://3gfvfoy1c7ag" path="res://Assets/EllieBackground.png" id="1_f0s1p"]
+[ext_resource type="Script" uid="uid://ctl67tl8qralc" path="res://Levels/Main Menu/scripts/scene_1_welcome.gd" id="1_vah8u"]
 [ext_resource type="Texture2D" uid="uid://8tbia8g2qa4s" path="res://Assets/EllieWave.png" id="2_nrxl2"]
 [ext_resource type="Texture2D" uid="uid://brqkrvbq4fv1p" path="res://Assets/EllieBubble1.png" id="3_8b2hf"]
 [ext_resource type="FontFile" uid="uid://cj477dq342a0c" path="res://Assets/Chewy-Regular.ttf" id="4_buk4j"]
+[ext_resource type="AudioStream" uid="uid://d2qr7qxlbmt7o" path="res://Assets/Audio/Engineer Workshop (Temp)/HI! I'M ELLIE! WELCOME TO MY CONSTRUCTION SITE! LETS BUILD USING YOUR SIGHT WORDS!.wav" id="6_1wx10"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_buk4j"]
 bg_color = Color(0.2, 0.8, 0.2, 1)
@@ -54,11 +56,13 @@ corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
 [node name="Scene1Welcome" type="Node2D"]
+script = ExtResource("1_vah8u")
 
 [node name="Background" type="Node2D" parent="."]
 
 [node name="ConstructionSite" type="Sprite2D" parent="Background"]
-position = Vector2(537, 384)
+position = Vector2(84.2778, 93.3908)
+scale = Vector2(0.762587, 0.638313)
 texture = ExtResource("1_f0s1p")
 offset = Vector2(640, 360)
 
@@ -67,8 +71,8 @@ offset = Vector2(640, 360)
 [node name="Character" type="Node2D" parent="."]
 
 [node name="EllieWaving" type="Sprite2D" parent="Character"]
-position = Vector2(776, 926)
-scale = Vector2(0.4, 0.4)
+position = Vector2(971, 418)
+scale = Vector2(0.314258, 0.26901)
 texture = ExtResource("2_nrxl2")
 
 [node name="UI" type="Control" parent="."]
@@ -80,7 +84,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SpeechBubble" type="Sprite2D" parent="UI"]
-position = Vector2(1122, 942)
+position = Vector2(560, 154)
 scale = Vector2(1.44819, 1.02696)
 texture = ExtResource("3_8b2hf")
 
@@ -107,10 +111,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 1020.0
-offset_top = 1097.0
-offset_right = 1240.0
-offset_bottom = 1147.0
+offset_left = 455.0
+offset_top = 545.0
+offset_right = 675.0
+offset_bottom = 595.0
 grow_horizontal = 2
 grow_vertical = 0
 
@@ -141,3 +145,11 @@ theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxFlat_qeaw5")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1wx10")
 theme_override_styles/normal = SubResource("StyleBoxFlat_vah8u")
 text = "Let's Build! "
+
+[node name="Hi!I\'mEllie!WelcomeToMyConstructionSite!LetsBuildUsingYourSightWords!" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(727, 425)
+stream = ExtResource("6_1wx10")
+autoplay = true
+
+[connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
+[connection signal="pressed" from="UI/ButtonContainer/StartButton" to="." method="_on_start_button_pressed"]
